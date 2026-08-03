@@ -1,18 +1,104 @@
 package com.example.webtoapk
 
-import android.app.*
+
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 
-class WebMonitorService: Service(){
+
+
+class WebMonitorService:Service(){
+
+
+
     override fun onCreate(){
+
+
         super.onCreate()
-        val ch=NotificationChannel("web","网页声音监控",NotificationManager.IMPORTANCE_LOW)
-        getSystemService(NotificationManager::class.java).createNotificationChannel(ch)
-        startForeground(1,Notification.Builder(this,"web")
-            .setContentTitle("网页APK运行中")
-            .setContentText("后台监控网页声音")
-            .setSmallIcon(android.R.drawable.ic_media_play).build())
+
+
+
+        val channel=
+            NotificationChannel(
+
+                "web",
+
+                "中控面板后台",
+
+                NotificationManager.IMPORTANCE_LOW
+
+            )
+
+
+
+        val manager=
+            getSystemService(
+                NotificationManager::class.java
+            )
+
+
+
+        manager.createNotificationChannel(
+            channel
+        )
+
+
+
+
+
+        val notification=
+            Notification.Builder(
+                this,
+                "web"
+            )
+
+                .setContentTitle(
+                    "中控面板运行中"
+                )
+
+                .setContentText(
+                    "网页后台监控"
+                )
+
+                .setSmallIcon(
+                    R.drawable.favicon
+                )
+
+                .build()
+
+
+
+
+        startForeground(
+
+            1,
+
+            notification
+
+        )
+
+
+
     }
-    override fun onBind(i:Intent?):IBinder?=null
+
+
+
+
+
+    override fun onBind(
+        intent:Intent?
+    ):IBinder?{
+
+
+        return null
+
+
+    }
+
+
+
 }
