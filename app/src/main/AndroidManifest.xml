@@ -1,18 +1,41 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- 通知权限 Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- 后台服务 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:theme="@style/AppTheme"
-        android:label="中控数值面板">
-        <activity android:name=".MainActivity" android:exported="true">
+        android:label="中控面板"
+        android:icon="@drawable/favicon"
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
+
             </intent-filter>
+
         </activity>
-        <service android:name=".WebMonitorService"
+
+
+        <service
+            android:name=".WebMonitorService"
             android:foregroundServiceType="specialUse"/>
+
+
     </application>
+
 </manifest>
