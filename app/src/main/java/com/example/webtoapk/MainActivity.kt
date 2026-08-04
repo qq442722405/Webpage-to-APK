@@ -4,14 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.WindowManager
 import android.webkit.*
+import android.widget.*
 
 class MainActivity : Activity() {
 
     private lateinit var web: WebView
-
-    private val HOME_URL = "http://183.167.219.74:5000/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,22 +21,71 @@ class MainActivity : Activity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        openWeb()
+        val sp = getSharedPreferences("cfg", MODE_PRIVATE)
+        val url = sp.getString("url", "") ?: ""
+
+        if (url.isEmpty()) {
+            showInput(sp)
+        } else {
+            openWeb(url)
+        }
 
         try {
             if (Build.VERSION.SDK_INT >= 26) {
-                startForegroundService(Intent(this, WebMonitorService::class.java))
+                startForegroundService(
+                    Intent(this, WebMonitorService::class.java)
+                )
             } else {
-                startService(Intent(this, WebMonitorService::class.java))
+                startService(
+                    Intent(this, WebMonitorService::class.java)
+                )
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
     }
 
-    private fun openWeb() {
+    private fun showInput(sp: android.content.SharedPreferences) {
+
+        val layout = LinearLayout(this)
+        layout.orientation = LinearLayout.VERTICAL
+        layout.gravity = Gravity.CENTER
+
+        val edit = EditText(this)
+        edit.hint = "请输入网址或IP地址"
+
+        val button = Button(this)
+        button.text = "确定"
+
+        layout.addView(edit)
+        layout.addView(button)
+
+        setContentView(layout)
+
+        button.setOnClickListener {
+
+            var url = edit.text.toString().trim()
+
+            if (url.isNotEmpty()) {
+
+                if (!url.startsWith("http")) {
+                    url = "http://$url"
+                }
+
+                sp.edit()
+                    .putString("url", url)
+                    .apply()
+
+                openWeb(url)
+            }
+        }
+    }
+
+    private fun openWeb(url: String) {
+
         web = WebView(this)
 
         val setting = web.settings
+
         setting.javaScriptEnabled = true
         setting.domStorageEnabled = true
         setting.databaseEnabled = true
@@ -46,20 +95,24 @@ class MainActivity : Activity() {
         setting.useWideViewPort = true
 
         web.webViewClient = object : WebViewClient() {
+
             override fun shouldOverrideUrlLoading(
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
+
                 view?.loadUrl(request?.url.toString())
                 return true
             }
         }
 
         setContentView(web)
-        web.loadUrl(HOME_URL)
+
+        web.loadUrl(url)
     }
 
     override fun onBackPressed() {
+
         if (::web.isInitialized && web.canGoBack()) {
             web.goBack()
         } else {
