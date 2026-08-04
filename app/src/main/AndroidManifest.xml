@@ -24,7 +24,7 @@
 
         android:theme="@style/AppTheme"
 
-        android:label="中控面板"
+        android:label="天长中控数据"
 
         android:icon="@drawable/favicon"
 
