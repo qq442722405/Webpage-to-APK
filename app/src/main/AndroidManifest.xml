@@ -24,7 +24,7 @@
 
         android:theme="@style/AppTheme"
 
-        android:label="Webpage to APK"
+        android:label="天长中控数据"
 
         android:icon="@drawable/favicon"
 
